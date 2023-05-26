@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom';
 import axios from 'axios'
-import {Table} from 'react-bootstrap';
+import {Table, Button, Spinner} from 'react-bootstrap';
 
 // function HomePage() {
 //   return (
@@ -11,6 +11,7 @@ import {Table} from 'react-bootstrap';
  const HomePage = ()=>{
 //creating a user array and default setter methods and by default the array is empty
     const [users, setUsers] =useState([]);
+    const [loading, setLoading] = useState(true);
     //call on load of the componene only once because dependency array is empty
     useEffect(()=>{
         //getAllUsers();
@@ -20,8 +21,14 @@ import {Table} from 'react-bootstrap';
     const getAllUsersWithAwait = async () =>{
         const result = await axios.get("http://localhost:5000/users");
         console.log(result);
-        setUsers(result.data);
+        setUsers(result.data.reverse());
+        setLoading(false);
         console.log("after axios call");
+    }
+    const deleteUser = async (userId) => {
+        await axios.delete(`http://localhost:5000/users/${userId}`);
+        getAllUsersWithAwait();
+
     }
     const getAllUsers = () => {
         axios.get("http://localhost:5000/users")
@@ -39,6 +46,8 @@ import {Table} from 'react-bootstrap';
 
      return(
          <div className='container'>
+            {loading ? <Spinner animation='grow'></Spinner> :
+            <div> 
             <h2 className="py-3">User management System</h2>
             <Table striped bordered hover >
                 <thead>
@@ -59,9 +68,9 @@ import {Table} from 'react-bootstrap';
                                 <td>{user.email}</td>
                                 <td>{user.phone}</td>
                                 <td>
-                                    <Link to='' className="btn btn-info me-2" >View</Link>
-                                    <Link to='' className="btn btn-outline-info me-2">Edit</Link>
-                                    <Link to='' className="btn btn-danger">Delete</Link>
+                                    <Link to={`/users/view/${user.id}`} className="btn btn-info me-2" >View</Link>
+                                    <Link to={`/users/edit/${user.id}`} className="btn btn-outline-info me-2">Edit</Link>
+                                    <Button variant="danger" onClick={ () => deleteUser(user.id)} >Delete</Button>
                                 </td>
                             </tr>
                         ))
@@ -80,6 +89,8 @@ import {Table} from 'react-bootstrap';
 
                 </tbody>
             </Table>
+            </div>
+            }
          </div>
 
      )

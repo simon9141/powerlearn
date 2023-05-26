@@ -7,7 +7,8 @@ import NavBar from './components/layout/NavBar';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import PageNotFound from './components/pages/PageNotFound';
 import AddUser from './components/user/AddUser';
-
+import EditUser from './components/user/EditUser';
+import ViewUser from './components/user/ViewUser';
 
 function App() {
 
@@ -20,6 +21,8 @@ function App() {
           <Route exact path="/about" element={<AboutPage />} />
           <Route exact path="/contact" element={<ContactPage />} />
           <Route exact path="/users/add" element={<AddUser />} />
+          <Route exact path="/users/edit/:userId" element={<EditUser />} />
+          <Route exact path="/users/view/:userId" element={<ViewUser />} />
           <Route path='*' element={<PageNotFound />} />
         </Routes>
       </div>
